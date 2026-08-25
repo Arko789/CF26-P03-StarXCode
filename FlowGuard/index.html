@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FlowGuard AI – Convert English Rules into Verified Workflows</title>
+  <meta name="description" content="AI-powered workflow verification and compiler that transforms natural language business rules into verified, executable, safe workflow graphs.">
+  
+  <!-- Google Fonts: Outfit & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/graph.css">
+  <link rel="stylesheet" href="css/components.css">
+</head>
+<body>
+  <div id="app">
+    
+    <!-- Top Navigation Bar -->
+    <header class="navbar">
+      <div class="nav-brand">
+        <div class="brand-icon">🛡️</div>
+        <div class="brand-info">
+          <h1 class="brand-title">
+            FlowGuard AI
+            <span class="brand-badge">Verification Engine</span>
+          </h1>
+          <span class="brand-subtitle">Convert English Rules into Verified Workflows</span>
+        </div>
+      </div>
+
+      <div class="nav-actions">
+        <div class="engine-status-pill" id="engine-status">
+          <span class="pulse-dot"></span>
+          <span>5-Pillar Engine Active</span>
+        </div>
+        <button class="btn btn-outline btn-sm" id="guide-btn" title="How It Works Walkthrough">
+          <span>📖</span> How It Works
+        </button>
+        <button class="btn btn-outline btn-sm" id="api-key-btn" title="Configure Gemini LLM Key">
+          <span>🔑</span> AI Settings
+        </button>
+        <button class="btn btn-outline btn-sm" id="export-btn" title="Export Workflow">
+          <span>💾</span> Export
+        </button>
+        <button class="btn-icon" id="sound-toggle-btn" title="Toggle Sound FX">🔔</button>
+        <button class="btn-icon" id="theme-toggle-btn" title="Toggle Theme">🌙</button>
+      </div>
+    </header>
+
+    <!-- Step 1-6 Flow Progress Pipeline Banner (Matching Diagram) -->
+    <nav class="flow-progress-banner" aria-label="Workflow Pipeline Steps">
+      <div class="pipeline-steps">
+        <div class="pipeline-step success" id="step-pill-1">
+          <span class="step-num">1</span>
+          <span>User Input</span>
+        </div>
+        <span class="step-separator">➔</span>
+        <div class="pipeline-step active" id="step-pill-2">
+          <span class="step-num">2</span>
+          <span>AI Understands</span>
+        </div>
+        <span class="step-separator">➔</span>
+        <div class="pipeline-step" id="step-pill-3">
+          <span class="step-num">3</span>
+          <span>JSON AST</span>
+        </div>
+        <span class="step-separator">➔</span>
+        <div class="pipeline-step" id="step-pill-4">
+          <span class="step-num">4</span>
+          <span>Graph Creation</span>
+        </div>
+        <span class="step-separator">➔</span>
+        <div class="pipeline-step" id="step-pill-5">
+          <span class="step-num">5</span>
+          <span>Verification</span>
+        </div>
+        <span class="step-separator">➔</span>
+        <div class="pipeline-step" id="step-pill-6">
+          <span class="step-num">6</span>
+          <span>Valid?</span>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Color Legend Bar (From Diagram) -->
+    <section class="color-legend-bar" aria-label="Color Meanings Legend">
+      <span class="legend-title">Color Guide:</span>
+      <div class="legend-item"><span class="legend-dot blue"></span> <strong>Blue</strong> = Input / Main Steps</div>
+      <div class="legend-item"><span class="legend-dot green"></span> <strong>Green</strong> = AI / Approvals / Success</div>
+      <div class="legend-item"><span class="legend-dot yellow"></span> <strong>Yellow</strong> = Data / Conditions</div>
+      <div class="legend-item"><span class="legend-dot purple"></span> <strong>Purple</strong> = Automated Workflow</div>
+      <div class="legend-item"><span class="legend-dot red"></span> <strong>Red</strong> = Errors / Problems</div>
+      <div class="legend-item"><span class="legend-dot orange"></span> <strong>Orange</strong> = Warnings / Checks</div>
+    </section>
+
+    <!-- Main Split Workspace Grid -->
+    <main class="main-workspace">
+      
+      <!-- LEFT PANEL: Studio, Input & AST Inspector -->
+      <aside class="panel" id="studio-panel">
+        <div class="panel-header">
+          <h2 class="panel-title"><span>✍️</span> 1. English Rule Studio</h2>
+          <div class="panel-actions">
+            <button class="btn btn-outline btn-sm" id="enhance-ai-btn" title="Enhance Rule Structure">✨ Enhance</button>
+            <button class="btn btn-outline btn-sm" id="random-rule-btn" title="Load Random Benchmark Rule">🎲 Random</button>
+            <button class="btn btn-outline btn-sm" id="clear-rule-btn" title="Clear Editor">🧹 Clear</button>
+          </div>
+        </div>
+
+        <div class="panel-body">
+          
+          <!-- Presets Bar -->
+          <div class="rule-input-card">
+            <div class="rule-header-row">
+              <span class="section-label">⚡ Benchmark Presets</span>
+            </div>
+            <div class="preset-pills-bar" id="preset-pills-container">
+              <!-- Rendered dynamically from presets.js -->
+            </div>
+
+            <!-- Natural Language Textarea -->
+            <div class="rule-editor-wrapper">
+              <textarea 
+                id="rule-input" 
+                class="rule-textarea" 
+                placeholder="Write your rule in simple English. Example: 'If order > ₹50,000, get manager approval and create purchase order.'"
+                rows="4"
+              ></textarea>
+              <div class="rule-entity-tags" id="entity-tags-container">
+                <!-- Real-time entity badges -->
+              </div>
+            </div>
+
+            <!-- Organization Context & Initiator Role Selection -->
+            <div class="rule-meta-bar">
+              <div class="meta-field">
+                <label class="meta-label" for="initiator-role-select">Initiator Role</label>
+                <select id="initiator-role-select" class="meta-select">
+                  <!-- Populated from RBAC_ROLES -->
+                </select>
+              </div>
+              <div class="meta-field">
+                <label class="meta-label">Org Budget Limit</label>
+                <input class="meta-input" value="₹500,000 Max" readonly />
+              </div>
+            </div>
+
+            <!-- Primary Action Button -->
+            <button class="btn btn-primary btn-block" id="parse-verify-btn">
+              <span>⚡</span> Translate & Verify Workflow
+            </button>
+          </div>
+
+          <!-- Step 2 & 3: AI Understanding & JSON AST Inspector -->
+          <div class="ast-inspector-card">
+            <div class="ast-tabs">
+              <button class="ast-tab-btn active" data-tab="json">
+                <span>{...}</span> 3. Intermediate Representation (JSON AST)
+              </button>
+            </div>
+            <div class="ast-content">
+              <button class="ast-copy-btn" id="copy-ast-btn">📋 Copy JSON</button>
+              <pre id="ast-json-view">// Compiling AST...</pre>
+            </div>
+          </div>
+
+          <!-- Step 5: 5-Pillar Verification Matrix -->
+          <div class="verification-matrix">
+            <div class="matrix-header">
+              <h3 class="matrix-title"><span>🛡️</span> 5. Verification Engine Matrix</h3>
+            </div>
+            <div class="pillar-grid" id="pillars-grid">
+              <!-- Rendered dynamically by verifier.js -->
+            </div>
+          </div>
+
+        </div>
+      </aside>
+
+      <!-- RIGHT PANEL: Interactive Graph Canvas & Execution Section -->
+      <section class="graph-workspace" id="graph-panel">
+        
+        <!-- Graph Canvas Toolbar -->
+        <div class="graph-toolbar">
+          <div class="graph-title-group">
+            <h2 class="panel-title"><span>🔀</span> 4. Workflow Graph Canvas</h2>
+            <div class="graph-stats">
+              <span class="graph-stat-badge">Interactive Node Engine</span>
+            </div>
+          </div>
+          <div class="graph-controls">
+            <button class="btn-icon" id="zoom-in-btn" title="Zoom In">➕</button>
+            <button class="btn-icon" id="zoom-out-btn" title="Zoom Out">➖</button>
+            <button class="btn-icon" id="zoom-fit-btn" title="Fit to View">🔲</button>
+            <button class="btn-icon" id="zoom-reset-btn" title="Reset View">🔄</button>
+          </div>
+        </div>
+
+        <!-- Graph Viewport & Canvas -->
+        <div class="graph-viewport" id="graph-viewport">
+          <div class="graph-canvas">
+            <svg class="graph-svg-layer"></svg>
+            <div class="graph-nodes-layer"></div>
+          </div>
+          
+          <!-- Minimap -->
+          <div class="graph-minimap">
+            <canvas id="minimap-canvas"></canvas>
+          </div>
+        </div>
+
+        <!-- Step 6: Verdict & Dual Resolution Section (Safe to Execute vs Needs Correction) -->
+        <div class="verdict-resolution-wrapper" style="padding: 1.25rem; background: var(--bg-secondary); border-top: 1px solid var(--border-subtle); max-height: 380px; overflow-y: auto;">
+          
+          <!-- Verdict Banner (Status: Safe to Execute vs Needs Correction) -->
+          <div id="verdict-container">
+            <!-- Rendered by app.js -->
+          </div>
+
+          <!-- Branch NO: AI Explains & Suggests Fix (Auto-Repair) -->
+          <div class="ai-autofix-card" id="ai-fix-container" style="display: none;">
+            <!-- Rendered by auto-fixer.js -->
+          </div>
+
+          <!-- Branch YES: Live Interactive Execution Simulator -->
+          <div class="simulator-card" id="simulator-card-wrapper" style="display: none;">
+            <div class="sim-header">
+              <span class="section-label">▶ Live Execution Simulator (Test Run)</span>
+              <div class="sim-controls">
+                <button class="btn btn-success btn-sm" id="sim-run-btn">▶ Auto Run</button>
+                <button class="btn btn-secondary btn-sm" id="sim-step-btn">⏭ Next Step</button>
+                <button class="btn btn-outline btn-sm" id="sim-reset-btn">⏹ Reset</button>
+              </div>
+            </div>
+
+            <!-- Simulation Inputs -->
+            <div class="sim-inputs-grid">
+              <div class="sim-input-item">
+                <label for="sim-amount-input">Order Amount (₹)</label>
+                <input type="number" id="sim-amount-input" value="65000" step="5000" />
+              </div>
+              <div class="sim-input-item">
+                <label for="sim-decision-select">Manager Decision</label>
+                <select id="sim-decision-select">
+                  <option value="Approved">Approved</option>
+                  <option value="Rejected">Rejected</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Real-time Trace Log -->
+            <div class="sim-trace-log" id="sim-trace-log">
+              <div class="trace-entry info">[Ready] Ready to simulate runtime token traversal.</div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Node Inspector Slide-Over Drawer -->
+        <aside class="node-drawer" id="node-drawer">
+          <div class="drawer-header">
+            <h3 class="panel-title" id="drawer-node-title">Node Inspector</h3>
+            <button class="btn-icon btn-sm" id="drawer-close-btn">✕</button>
+          </div>
+          <div class="drawer-body" id="drawer-node-content">
+            <!-- Rendered on node click -->
+          </div>
+        </aside>
+
+      </section>
+
+    </main>
+
+    <!-- Modal: API Key Configuration -->
+    <div class="modal-overlay" id="api-key-modal">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3 class="modal-title">🔑 AI Engine Settings (Gemini Integration)</h3>
+          <button class="btn-icon btn-sm modal-close-btn">✕</button>
+        </div>
+        <div class="modal-body">
+          <p style="font-size: 0.85rem; color: var(--text-secondary);">
+            FlowGuard AI comes with a lightning-fast <strong>built-in semantic compiler</strong> that works 100% offline. Optionally, connect your Google Gemini API Key for live LLM reasoning.
+          </p>
+          <div class="meta-field">
+            <label class="meta-label" for="api-key-input">Google Gemini API Key</label>
+            <input type="password" id="api-key-input" class="meta-input" placeholder="AIzaSy..." />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-outline modal-close-btn">Cancel</button>
+          <button class="btn btn-primary" id="save-api-key-btn">Save Configuration</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: Guided Tour Walkthrough -->
+    <div class="modal-overlay" id="guided-tour-modal">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3 class="modal-title">📖 FlowGuard AI – How It Works</h3>
+          <button class="btn-icon btn-sm modal-close-btn">✕</button>
+        </div>
+        <div class="modal-body" style="font-size: 0.85rem; line-height: 1.6; color: var(--text-secondary);">
+          <div style="display:flex; flex-direction:column; gap:0.75rem;">
+            <div><strong>1. User Input:</strong> Enter business rules in plain English (e.g. <em>"If order &gt; ₹50,000, get manager approval and create purchase order."</em>).</div>
+            <div><strong>2. AI Understands:</strong> The AI parser extracts triggers, threshold operators, roles, conditions, and actions.</div>
+            <div><strong>3. Intermediate Representation (JSON AST):</strong> Compiles English into a structured machine-readable JSON AST.</div>
+            <div><strong>4. Workflow Graph Creation:</strong> Instantly generates an interactive, draggable DAG diagram color-coded by step type.</div>
+            <div><strong>5. 5-Pillar Verification Engine:</strong> Checks for Circular Loops (5.1), Unreachable Steps (5.2), Ambiguity (5.3), RBAC Permissions (5.4), and Enterprise Policies (5.5).</div>
+            <div><strong>6. Is Workflow Valid?:</strong> If safe, unlocks the <strong>Live Execution Simulator</strong>. If issues are detected, AI generates a <strong>1-Click Auto-Fix</strong> to repair the rule!</div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-primary modal-close-btn">Got It!</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: Export Code / BPMN / JSON -->
+    <div class="modal-overlay" id="export-modal">
+      <div class="modal-card" style="max-width: 650px;">
+        <div class="modal-header">
+          <h3 class="modal-title">💾 Export Verified Workflow</h3>
+          <button class="btn-icon btn-sm modal-close-btn">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="ast-tabs">
+            <button class="ast-tab-btn active">JSON AST</button>
+          </div>
+          <pre class="ast-content" id="export-json-code" style="max-height:180px;"></pre>
+          
+          <div style="margin-top: 0.5rem; font-size: 0.8rem; font-weight:600; color:var(--text-primary);">Mermaid Diagram</div>
+          <pre class="ast-content" id="export-mermaid-code" style="max-height:120px;"></pre>
+
+          <div style="margin-top: 0.5rem; font-size: 0.8rem; font-weight:600; color:var(--text-primary);">Executable Runtime Code</div>
+          <pre class="ast-content" id="export-js-code" style="max-height:140px;"></pre>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-primary modal-close-btn">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast Notifications Container -->
+    <div class="toast-container" id="toast-container"></div>
+
+  </div>
+
+  <!-- Application Bootstrap (ES Module) -->
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
