@@ -247,13 +247,13 @@ Being upfront about limits, since every real project has them:
 
 ## 10. Team Members
 
-| Name | What they worked on |
+| Name |
 |---|---|
 | Arkodeep sen  | 
 | Bhavesh Raut  | 
 | Devansh lakhade |
 | Piyush petkar  |
-*(Replace with your real names before submitting!)*
+
 
 ---
 
