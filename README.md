@@ -248,7 +248,7 @@ Being upfront about limits, since every real project has them:
 ## 10. Team Members
 
 | Name |
-|---|---|
+|---|
 | Arkodeep sen  | 
 | Bhavesh Raut  | 
 | Devansh lakhade |
